@@ -1,0 +1,15 @@
+format: jb-book
+root: index
+parts:
+  - caption: Praktikumsanleitung
+    chapters:
+    - file: Inhalte/aufgabenstellung
+    - file: Inhalte/vorbereitung
+    - file: Inhalte/grundlagen
+    - file: Inhalte/programme
+    - file: Inhalte/durchführung
+    - file: Inhalte/auswertung
+  - caption: Tutorials
+    chapters:
+    - file: Inhalte/install_gromacs
+    - file: Inhalte/pymol_tutorial

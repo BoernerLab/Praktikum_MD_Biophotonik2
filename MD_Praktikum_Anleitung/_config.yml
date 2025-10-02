@@ -1,0 +1,15 @@
+# in _config.yml
+title: "MD Praktikum"
+author: Felix Erichson, Richard Börner
+logo: Inhalte/Bilder/HSMW_LOGO_rgb.png 
+copyright: "2025 / CC BY-NC-SA"  # Copyright year to be placed in the footer
+execute:
+  execute_notebooks: "off"
+repository:
+  url: https://github.com/BoernerLab/Praktikum_MD_Biophotonik2
+  path_to_book: Inhlate
+  branch: main
+html:
+  use_repository_button: true
+latex:
+  mathjax: true
