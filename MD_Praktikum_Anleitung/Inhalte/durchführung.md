@@ -179,7 +179,9 @@ Führen Sie den folgenden Befehl aus:
 ```bash
 gmx genion -s em/RNA_hairpin.tpr -o em/RNA_hairpin.gro -p RNA_hairpin.top -pname K -nname Cl -neutral
 ```
+
 Parameter:
+
 - s: Eingabedatei (ions.tpr), erzeugt durch grompp
 - o: Ausgabedatei mit den neuen Ionenkonfigurationen
 - p: Topologiedatei, die automatisch um die Anzahl der Ionen ergänzt wird
@@ -188,10 +190,67 @@ Parameter:
 
 -neutral – weist GROMACS an, nur so viele Ionen hinzuzufügen, dass das Gesamtsystem elektrisch neutral wird
 
-Während der Ausführung von genion werden Sie aufgefordert, eine Atomgruppe auszuwählen, deren Moleküle durch Ionen ersetzt werden sollen.
+Während der Ausführung von genion werden Sie aufgefordert, eine Atomgruppe auszuwählen, deren Moleküle durch Ionen
+ersetzt werden sollen.
 Wählen Sie hier die Gruppe „SOL“ aus und bestätigen Sie mit Enter.
 
 **Berechnen Sie die Ionenkonzentration von Kalium in Ihrem System.**
+
+## 4. Energieminimierung
+
+Nach dem Aufbau und der Neutralisierung des Systems kann die Molekulardynamik-Simulation noch nicht direkt gestartet
+werden.  
+Zunächst müssen **sterische Kollisionen** oder ungünstige Geometrien im System beseitigt werden, die während des
+Solvatisierungs- und Ionisierungsschritts entstanden sein können.  
+Dies geschieht durch eine **Energie-Minimierung (Energy Minimization, EM)**, bei der das System in einen energetisch
+günstigen Startzustand gebracht wird.
+
+---
+
+##### Vorbereitung mit `grompp`
+
+Wie in den vorherigen Schritten wird zunächst eine **Run-Input-Datei (.tpr)** erzeugt, die alle Informationen zur
+Minimierung enthält.  
+Dazu werden die Parameterdatei, die aktuelle Struktur und die Topologie kombiniert:
+
+```bash
+gmx grompp -f ./mdp/em.mdp -c em/RNA_hairpin.gro -p RNA_hairpin.top -o em/RNA_hairpin.tpr
+```
+
+Parameter:
+
+- f: Eingabedatei mit Minimierungsparametern (minim.mdp)
+- c: Startkoordinaten (ionisiertes System)
+- p: Topologiedatei
+- o: Ausgabedatei für die Run-Input-Datei (em.tpr)
+
+Die Datei em.mdp enthält Einstellungen für die Energie-Minimierung.
+In der Datei gibt es die
+Einstellung `integrator = steep`. Diese Einstellung minimiert die Energie des Moleküls durch
+Änderung der Positionen der Atome. Dabei wird das Verfahren des steilsten Abstiegs verwendet.
+Die Minimierung wird so lange fortgesetzt, bis der maximale Kraftwert unter einem definierten Schwellenwert (z. B. 1000
+kJ mol⁻¹ nm⁻¹) liegt oder die maximale Schrittzahl erreicht ist.
+
+##### Durchführung mit mdrun
+
+Nach erfolgreicher Vorbereitung kann die Energie-Minimierung gestartet werden:
+
+```bash
+gmx mdrun -v -s em/RNA_hairpin.tpr -c em/RNA_hairpin.gro -o em/RNA_hairpin.trr -e em/RNA_hairpin.edr -g em/RNA_hairpin.log
+```
+Parameter:
+
+- v: „verbose“: zeigt den Fortschritt der Minimierung in der Konsole an
+- s: Eingabedatei (.tpr), erzeugt durch grompp
+- c: Ausgabedatei mit der minimierten Struktur
+- o: Trajektorie-Datei 
+- e: Binärdatei mit Energiewerten
+- g: Logdatei mit Protokoll des Minimierungslaufs
+
+Während der Minimierung werden keine dynamischen Bewegungen simuliert, sondern die atomaren Positionen entlang des
+Gradienten des Potentialfelds angepasst, bis die potentielle Energie minimiert ist.
+
+Nach erfolgreicher Minimierung ist das System nun spannungsfrei und bereit für die Äquilibrierungsphase (NVT/NPT).
 
 
 
