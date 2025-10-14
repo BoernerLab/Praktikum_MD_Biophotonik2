@@ -45,11 +45,12 @@
    ```  
    können Sie prüfen, ob die Datei im aktuellen Verzeichnis liegt.
 
-4. **Archiv entpacken**  
+4. **Archiv entpacken mit tar**  
    ```bash
    tar xfz gromacs-2025.3.tar.gz
    cd gromacs-2025.3
    ```
+   Mit dem Befehl `cd` wechseln Sie in das entpackte Verzeichnis. 
 
 5. **Build-Ordner anlegen und betreten**  
    ```bash
@@ -57,17 +58,17 @@
    cd build
    ```
 
-6. **Konfiguration mit CMake**  
+6. **Konfiguration der Installtion mit CMake**  
    ```bash
    cmake .. -DGMX_BUILD_OWN_FFTW=ON -DREGRESSIONTEST_DOWNLOAD=ON
    ```
 
-7. **Kompilieren**  
+7. **Kompilieren (Dieser Schritt kann einige Zeit in Anspruch nehmen)**  
    ```bash
    make -j$(nproc)
    ```
 
-8. **Optional: Installation prüfen**  
+8. **Optional: Installation prüfen (Dieser Schritt kann einige Zeit in Anspruch nehmen)**  
    ```bash
    make check
    ```
@@ -77,10 +78,13 @@
    sudo make install
    ```
 
-10. **GROMACS-Befehle aktivieren**  
+10. **GROMACS-Befehle aktivieren**
+
+    Dieser Befehl muss immer bei Neustart der Ubuntu Umgebung unter Windows durchgeführt werden.
     ```bash
     source /usr/local/gromacs/bin/GMXRC
     ```
+
 
 ---
 
@@ -91,82 +95,3 @@ Prüfen Sie die Installation mit:
 gmx --version
 ```
 Wenn die Versionsnummer von **GROMACS 2025.3** erscheint, ist die Installation erfolgreich abgeschlossen.
-
----
-
-## 4. Troubleshooting (Häufige Fehler und Lösungen)
-
-### Problem 1: `wsl: command not found`
-- Ursache: WSL ist nicht installiert oder nicht aktiviert.  
-- Lösung:  
-  - Öffnen Sie PowerShell als Administrator.  
-  - Führen Sie erneut aus:  
-    ```bash
-    wsl --install
-    ```
-  - Starten Sie den Rechner neu.
-
----
-
-### Problem 2: `cmake: command not found`
-- Ursache: CMake wurde nicht installiert.  
-- Lösung:  
-  ```bash
-  sudo apt install cmake -y
-  ```
-
----
-
-### Problem 3: `make: command not found`
-- Ursache: Entwicklungswerkzeuge fehlen.  
-- Lösung:  
-  ```bash
-  sudo apt install build-essential -y
-  ```
-
----
-
-### Problem 4: `wget: command not found`
-- Ursache: Das Download-Programm wget fehlt.  
-- Lösung:  
-  ```bash
-  sudo apt install wget -y
-  ```
-
----
-
-### Problem 5: `gmx: command not found` nach Installation
-- Ursache: GROMACS-Umgebungsvariablen wurden nicht geladen.  
-- Lösung:  
-  - Laden Sie GROMACS manuell:  
-    ```bash
-    source /usr/local/gromacs/bin/GMXRC
-    ```
-  - Um dies dauerhaft zu aktivieren, fügen Sie die Zeile in Ihre `~/.bashrc` ein:  
-    ```bash
-    echo "source /usr/local/gromacs/bin/GMXRC" >> ~/.bashrc
-    ```
-
----
-
-### Problem 6: Speicher oder Berechtigungsfehler bei `make`
-- Ursache: Kompilierung benötigt mehr Speicher oder Adminrechte.  
-- Lösung:  
-  - Kompilieren mit nur einem Thread:  
-    ```bash
-    make -j1
-    ```
-  - Stellen Sie sicher, dass Sie genügend Speicherplatz haben (ca. 3–5 GB).
-
----
-
-### Problem 7: `tar: command not found`
-- Ursache: Das Archivierungsprogramm fehlt.  
-- Lösung:  
-  ```bash
-  sudo apt install tar -y
-  ```
-
----
-
-✅ Mit diesen Hinweisen sollten die häufigsten Installationsprobleme behoben werden können.

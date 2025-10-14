@@ -1,12 +1,16 @@
 # 2 Vorbereitung
 
-Zur durchführung des Versuch sind folgende Voraussetzungen erforderlich:
-- Installierte GROMACS Version 
-- PyMOL 
-- Python 3 in einer geeigneten Programmierumgebung
+Zur Durchführung des Versuchs sind folgende Voraussetzungen erforderlich:
 
-Installieren Sie die entsprechenden Programme nach den verlinkten Anleitungen im Versuch 
-Bitte bringen Sie zum Versuch einen Laptop oder Rechner mit den Installierten Programmen mit. 
+- Eine installierte GROMACS-Version in einer Linux-basierten Umgebung. (Installationsanleitung für
+  Windows: [hier](#install_gromacs))
+- PyMOL3 für Strukturvisualisierung (Installationsanleitung: [hier](#pymol_tutorial))
+- Python 3 in einer geeigneten Programmierumgebung z.B. Jupyter-Notebook für die Auswertung (Für die Auswertung können
+  Sie wahlweise PyVo installieren: <a href="https://boernerlab.github.io/PyVo/index_page.html" target="_blank">hier</a>)
 
-## Vorbereitungsfragen: 
 
+**Wichtig:** Installieren Sie die entsprechenden Programme **vor dem Praktikumstermin** gemäß den verlinkten Anleitungen. Die Installation ist eine **Voraussetzung für die Teilnahme** am Praktikum.
+
+Bringen Sie bitte einen Laptop oder Rechner mit den vollständig installierten Programmen zum Versuch mit. Planen Sie ausreichend Zeit für die Installation ein, um technische Probleme vorab lösen zu können.
+
+Bei Fragen oder Problemen zur Installation wenden Sie sich bitte rechtzeitig an uns.
