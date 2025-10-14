@@ -1,8 +1,8 @@
 # 5 Durchführung
 
-## Vorberetiung
+## Vorbereitung
 
-Laden Sie das bereitgestellte Repository herunter und entpacken Sie es.
+Laden Sie das bereitgestellte Repository herunter (<a href="https://github.com/BoernerLab/Praktikum_MD_Biophotonik2" target="_blank">hier</a>) und entpacken Sie es.
 Öffnen Sie anschließend die Ubuntu-Terminalumgebung und kopieren Sie den entpackten Ordner in Ihr Linux-Dateisystem.
 Dieses finden Sie im Dateiexplorer unter „Linux“. Kopieren Sie den Ordner in das Verzeichnis
 /home/"username" (wobei username Ihrem bei der Installation gewählten Benutzernamen entspricht).
@@ -20,7 +20,7 @@ In diesem Ordner befinden sich folgende Dateien und Unterordner:
 - mdp/
 
 Die erste Datei enthält die Struktur des RNA-Hairpins
-im [PDB-Format](https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html)
+im <a href="https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html" target="_blank">PDB-Format</a>.
 Das Kraftfeld definiert alle Parameter zur Berechnung der potentiellen Energie des Systems, also Bindungen, Winkel,
 Torsionen und nicht-gebundene Wechselwirkungen.
 Die .mdp-Dateien enthalten die Simulationsparameter (Integrationsschritt, Temperatur- und Druckkopplung, Cutoff-Werte
@@ -32,7 +32,7 @@ Starten Sie anschließend GROMACS, indem Sie die Umgebungsvariablen laden:
 source /usr/local/gromacs/bin/GMXRC 
 ```
 
-Damit steht der Befehl gmx systemweit zur Verfügung.
+Damit steht der Befehl gmx systemweit zur Verfügung. (Führen Sie diesen Befehl immer aus, wenn Sie das Ubuntu-Terminal neu starten)
 
 ## 1. pdb2gmx
 
@@ -200,7 +200,7 @@ Wählen Sie hier die Gruppe „SOL“ aus und bestätigen Sie mit Enter.
 
 Nach dem Aufbau und der Neutralisierung des Systems kann die Molekulardynamik-Simulation noch nicht direkt gestartet
 werden.  
-Zunächst müssen **sterische Kollisionen** oder ungünstige Geometrien im System beseitigt werden, die während des
+Zunächst müssen sterische Kollisionen oder ungünstige Geometrien im System beseitigt werden, die während des
 Solvatisierungs- und Ionisierungsschritts entstanden sein können.  
 Dies geschieht durch eine **Energie-Minimierung (Energy Minimization, EM)**, bei der das System in einen energetisch
 günstigen Startzustand gebracht wird.
@@ -236,14 +236,15 @@ kJ mol⁻¹ nm⁻¹) liegt oder die maximale Schrittzahl erreicht ist.
 Nach erfolgreicher Vorbereitung kann die Energie-Minimierung gestartet werden:
 
 ```bash
-gmx mdrun -v -s em/RNA_hairpin.tpr -c em/RNA_hairpin.gro -o em/RNA_hairpin.trr -e em/RNA_hairpin.edr -g em/RNA_hairpin.log
+gmx mdrun -v -s em/RNA_hairpin.tpr -c em/RNA_hairpin.gro -o em/RNA_hairpin.trr -e em/RNA_hairpin.edr -g em/RNA_hairpin.log -po em/RNA_hairpin.mdp
 ```
+
 Parameter:
 
 - v: „verbose“: zeigt den Fortschritt der Minimierung in der Konsole an
 - s: Eingabedatei (.tpr), erzeugt durch grompp
 - c: Ausgabedatei mit der minimierten Struktur
-- o: Trajektorie-Datei 
+- o: Trajektorie-Datei
 - e: Binärdatei mit Energiewerten
 - g: Logdatei mit Protokoll des Minimierungslaufs
 
@@ -252,5 +253,109 @@ Gradienten des Potentialfelds angepasst, bis die potentielle Energie minimiert i
 
 Nach erfolgreicher Minimierung ist das System nun spannungsfrei und bereit für die Äquilibrierungsphase (NVT/NPT).
 
+## 5. Temperatur Äquilibrierung
 
+In der NVT-Äquilibrierung wird das System langsam auf die Zieltemperatur gebracht, während das Volumen konstant bleibt.  
+Positionsrestriktionen halten die RNA weitgehend fixiert, sodass sich das Lösungsmittel an die Moleküloberfläche anpassen kann.  
+Dieser Schritt dient dazu, die Temperatur stabil zu etablieren, bevor der Druck angeglichen wird.
+
+Zunächst muss GROMACS alle Eingabedateien (Parameter, Struktur und Topologie) zu einer Run-Input-Datei zusammenfassen:
+
+```bash
+mkdir nvt
+gmx grompp -f ./mdp/nvt.mdp -c em/RNA_hairpin.gro -r em/RNA_hairpin.gro -p RNA_hairpin.top -o nvt/RNA_hairpin.tpr -po nvt/RNA_hairpin.mdp -maxwarn 2
+
+```
+
+**Parameter:**
+
+- f: Eingabedatei mit den NVT-Simulationsparametern (`nvt.mdp`)
+- c: Startkoordinaten aus der Energie-minimierten Struktur
+- r: Referenzkoordinaten für Positionsrestriktionen
+- p: Topologiedatei
+- o: Ausgabedatei für das vorbereitete System (`nvt/RNA_hairpin.tpr`)
+
+Führen Sie nun die NVT-Äquilibrierung mit folgendem Befehl aus:
+
+```bash
+gmx mdrun -v -s nvt/RNA_hairpin.tpr -c nvt/RNA_hairpin.gro -x nvt/RNA_hairpin.xtc -cpo nvt/RNA_hairpin.cpt -e nvt/RNA_hairpin.edr -g nvt/RNA_hairpin.log
+```
+
+**Parameter:**
+- `-v` – „verbose“: zeigt den Fortschritt in der Konsole an  
+- `-deffnm` – legt den Basisnamen aller Ein- und Ausgabedateien fest (`nvt/RNA_hairpin`)  
+
+
+## 6. Druck Equillibrierung
+
+Nachdem im vorherigen Schritt die Temperatur erfolgreich stabilisiert wurde, muss nun auch der **Druck** des Systems an die gewünschten Bedingungen angepasst werden.  
+Dieser Schritt erfolgt unter einem **NPT-Ensemble**, bei dem **Teilchenzahl (N)**, **Druck (P)** und **Temperatur (T)** konstant gehalten werden.
+
+Während der NPT-Äquilibrierung wird das Volumen der Simulationsbox flexibel angepasst, bis die **Dichte des Systems** (typischerweise etwa 1000 kg m⁻³ für Wasser) den Zielwert erreicht.  
+Die RNA bleibt weiterhin durch Positionsrestriktionen leicht fixiert, sodass sich vor allem Lösungsmittel und Ionen an die Moleküloberfläche anpassen.
+
+---
+
+### Vorbereitung mit `grompp`
+
+Die Erstellung der Run-Input-Datei für die NPT-Phase erfolgt analog zur NVT-Äquilibrierung, jedoch mit geänderten Parametern aus der Datei `npt.mdp`.  
+In dieser Datei sind die Druckkopplung und weitere relevante Parameter definiert.  
+Lemkul (2024) empfiehlt den **Parrinello-Rahman-Barostat**, da er bei biologischen Systemen eine realistische Druckschwankung ermöglicht.
+
+```bash
+mkdir npt
+gmx grompp -f ./mdp/npt.mdp -c nvt/RNA_hairpin.gro -r nvt/RNA_hairpin.gro -p RNA_hairpin.top -o npt/RNA_hairpin.tpr -po npt/RNA_hairpin.mdp -maxwarn 2
+```
+
+**Parameter:**
+- `-f` – Eingabedatei mit den Parametern für die NPT-Simulation (`npt.mdp`)  
+- `-c` – Startkoordinaten aus der NVT-Äquilibrierung  
+- `-r` – Referenzkoordinaten für Positionsrestriktionen  
+- `-t` – Checkpoint-Datei (`.cpt`) aus der NVT-Phase (enthält aktuelle Geschwindigkeiten und Thermostat-Zustand)  
+- `-p` – Topologiedatei  
+- `-o` – Ausgabedatei der vorbereiteten NPT-Simulation (`npt/RNA_hairpin.tpr`)  
+
+---
+
+### Simulation starten
+
+Starten Sie die Druck-Äquilibrierung mit:
+
+```bash
+gmx mdrun -v -s npt/RNA_hairpin.tpr -c npt/RNA_hairpin.gro -x npt/RNA_hairpin.xtc -cpo npt/RNA_hairpin.cpt -e npt/RNA_hairpin.edr -g npt/RNA_hairpin.log
+```
+
+**Parameter:**
+- `-v` – „verbose“: zeigt den Fortschritt in der Konsole an  
+- `-deffnm` – legt den Basisnamen aller Ein- und Ausgabedateien fest (`npt/RNA_hairpin`)  
+
+Während dieses Schritts passt sich das Volumen des Systems an, um den gewünschten Druck (meist 1 bar) zu erreichen.  
+Temperatur und Druck werden durch die in der `.mdp`-Datei definierten Thermostat- und Barostat-Kopplungen kontrolliert.
+
+## 7. MD Simulaiton 
+
+Analog zu den vorherigen Äquilibrierungsschritten wird nun die eigentliche MD-Simulation (Produktionslauf) vorbereitet und gestartet.  
+Hierbei wird keine Positionsrestriktion mehr angewendet, alle Atome können sich frei bewegen, und das System entwickelt sich entsprechend der in der Kraftfelddefinition vorgegebenen Wechselwirkungen.
+
+##### Anpassung der Simulationszeit
+
+Öffnen Sie nun die Datei mdp/md0.mdp in einem Texteditor.
+Passen Sie den Parameter für die Simulationszeit (`nsteps`) an, um die gewünschte Länge des MD-Laufs festzulegen.
+Starten Sie anschließend grompp und führen Sie die Simulation aus:
+
+```bash
+mkdir md0
+gmx grompp -f ./mdp/md0.mdp -c npt/RNA_hairpin.gro -r npt/RNA_hairpin.gro -p RNA_hairpin.top -o md0/RNA_hairpin.tpr -po md0/RNA_hairpin.mdp -maxwarn 2
+```
+
+```bash
+ gmx mdrun -v -s md0/RNA_hairpin.tpr -c md0/RNA_hairpin.gro -x md0/RNA_hairpin.xtc -cpo md0/RNA_hairpin.cpt -e md0/RNA_hairpin.edr -g md0/RNA_hairpin.log 
+```
+
+Beobachten Sie, wie lange die Berechnung auf Ihrem Rechner dauert, um ein Gefühl für die benötigte Rechenzeit zu bekommen.
+
+Im Anschluss stellen Sie die Simulationszeit auf eine Mikrosekunde (1 µs) ein und wiederholen den grompp-Schritt.
+Laden Sie die dabei erzeugten Dateien anschließend auf Opal hoch.
+Die Simulation wird dort auf einem dafür vorgesehenen Rechner ausgeführt.
+Die Ergebnisse erhalten Sie nach Abschluss der Simulation zur weiteren Analyse und Auswertung.
 
