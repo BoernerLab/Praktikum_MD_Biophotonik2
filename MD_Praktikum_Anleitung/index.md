@@ -6,12 +6,12 @@
 <br>
 <br>
 
-<h1 align="center" style="font-size:4em; "> Praktikum Biopotonik II </h1>
+<h1 align="center" style="font-size:4em; "> Praktikum Biophotonik II </h1>
 
 <br>
 <br>
 
-<p align="center" style="font-size:20pt">MD Simualtion eines RNA Hairpins</p>
+<p align="center" style="font-size:20pt">MD-Simulation eines RNA Hairpins</p>
 
 <br>
 

@@ -39,7 +39,7 @@ Darstellung, Sichtbarkeit, Farbe oder Transparenz gezielt ändern lassen.
 Am unteren Rand befindet sich die Kommandozeile. Sie erlaubt den direkten Zugriff auf alle PyMOL-Kommandos. Darüber
 liegt eine Statusanzeige, die kurze Hinweise oder Koordinateninformationen anzeigt.
 
-![Pymol fenster](Bilder/Pymol_start.png)]
+![Pymol fenster](Bilder/Pymol_start.png)
 
 ---
 
