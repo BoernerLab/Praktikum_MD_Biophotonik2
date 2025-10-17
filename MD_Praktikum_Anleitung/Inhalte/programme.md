@@ -6,8 +6,7 @@ Im Rahmen dieses Praktikums werden Sie mit folgenden Softwarewerkzeugen arbeiten
 ### GROMACS 
 
 **GROMACS** (GROningen MAchine for Chemical Simulations) dient zur Vorbereitung, Durchführung und Auswertung der
-Molekulardynamik-Simulationen. Mit diesem Programm werden Sie alle wesentlichen Schritte der MD-Simulation durchführen –
-von der Systemvorbereitung über die Äquilibrierung bis hin zur Produktionssimulation.
+Molekulardynamik-Simulationen. Mit diesem Programm werden Sie alle wesentlichen Schritte der MD-Simulation durchführen.
 
 Webseite: (<a href="https://www.gromacs.org/" target="_blank">https://www.gromacs.org/</a>)
 
@@ -21,7 +20,7 @@ Webseite: (<a href="https://pymol.org/" target="_blank">https://pymol.org/</a>)
 
 ### Python mit Jupyter Notebook
 
-Für die Auswertung der Simulationsdaten verwenden Sie **Python** in einer **Jupyter-Notebook-Umgebung**.
+Für die Auswertung der Simulationsdaten verwenden Sie Python in einer Jupyter-Notebook-Umgebung.
 Dabei kommen die wissenschaftlichen Bibliotheken **NumPy**, **pandas**, **matplotlib** und **MDAnalysis** zum Einsatz, um die Ergebnisse
 systematisch zu analysieren, statistisch auszuwerten und grafisch darzustellen.
 
