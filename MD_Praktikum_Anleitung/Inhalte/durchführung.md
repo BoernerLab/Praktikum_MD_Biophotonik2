@@ -74,8 +74,6 @@ gmx pdb2gmx -f RNA_hairpin.pdb -o em/RNA_hairpin.gro -p RNA_hairpin.top -i em/RN
 - i: Ausgabe positionsrestriktion Datei
 
 Nach dem Start von pdb2gmx werden Sie aufgefordert, ein Kraftfeld auszuwählen.
-Die Wahl des Kraftfeldes ist entscheidend für die Genauigkeit der Simulation, da jedes Kraftfeld auf spezifische
-experimentelle und theoretische Daten parametrisiert wurde.
 
 Für dieses Praktikum wird das Amber14SB-OL15-Kraftfeld verwendet, das speziell für RNA- und Protein-Simulationen
 optimiert ist.
