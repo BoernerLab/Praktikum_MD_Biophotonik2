@@ -1,6 +1,27 @@
 # 5 Durchführung
 
-## Vorbereitung
+## 5.1 Vorraussetzungen (vor dem Praktikum zu erledigen)
+
+Zur Durchführung des Versuchs sind folgende Voraussetzungen erforderlich:
+
+- Eine installierte GROMACS-Version in einer Linux-basierten Umgebung. (Installationsanleitung für
+  Windows: [hier](#install_gromacs))
+- PyMOL3 für Strukturvisualisierung (Installationsanleitung: [hier](#pymol_tutorial))
+- Python 3 in einer geeigneten Programmierumgebung z.B. Jupyter-Notebook für die Auswertung (Für die Auswertung können
+  Sie wahlweise PyVo installieren: <a href="https://boernerlab.github.io/PyVo/index_page.html" target="_blank">hier</a>)
+
+```{admonition} Wichtig
+:class: note
+
+Installieren Sie die entsprechenden Programme **vor dem Praktikumstermin** gemäß den verlinkten Anleitungen. Die Installation ist eine **Voraussetzung für die Teilnahme** am Praktikum.
+
+Bringen Sie bitte einen Laptop oder Rechner mit den vollständig installierten Programmen zum Versuch mit. Planen Sie ausreichend Zeit für die Installation ein, um technische Probleme vorab lösen zu können.
+
+```
+
+Bei Fragen oder Problemen zur Installation wenden Sie sich bitte rechtzeitig an uns.
+
+## 5.2 Vorbereitung
 
 Laden Sie das bereitgestellte Repository
 herunter (<a href="https://github.com/BoernerLab/Praktikum_MD_Biophotonik2" target="_blank">hier</a>) und entpacken Sie
@@ -43,7 +64,7 @@ Damit steht der Befehl gmx systemweit zur Verfügung.
 Führen Sie diesen Befehl immer aus, wenn Sie das Ubuntu-Terminal neu starten
 ```
 
-## 5.1 pdb2gmx
+## 5.3 pdb2gmx
 
 Mit dem Befehl pdb2gmx wird aus der PDB-Strukturdatei eine vollständige Moleküldefinition erstellt.
 Das Programm generiert dabei drei Ausgabedateien:
@@ -84,7 +105,7 @@ Da RNA experimentell in wässriger Lösung untersucht wird, wird auch in der Sim
 benötigt.. Für dieses Praktikum nutzen wir das
 Wassermodell 1 (TIP3P). Geben Sie dafür `1` ein drücken Sie `Enter`.
 
-## 5.2 Wasserbox definieren und füllen
+## 5.4 Wasserbox definieren und füllen
 
 Im nächsten Schritt wird eine simulationsfähige Box definiert, die anschließend mit Wassermolekülen gefüllt wird.
 Die Box legt das Volumen fest, in dem sich das RNA-Molekül und das Lösungsmittel bewegen dürfen. Da
@@ -96,8 +117,6 @@ Raumrichtungen, dadurch entsteht der Eindruck einer unendlichen Lösung.
 Zunächst muss die Form und Größe der Box festgelegt werden.
 Während eine kubische Box die einfachste Variante ist, wird in der Praxis häufig eine rhombische Dodekaederbox
 verwendet.
-Diese Form spart Volumen, da sie das Molekül enger umschließt und somit weniger Wassermoleküle benötigt, während der
-minimale Abstand zu den Boxgrenzen erhalten bleibt.
 
 Die Box wird mit dem Befehl editconf erstellt:
 
@@ -105,8 +124,6 @@ Die Box wird mit dem Befehl editconf erstellt:
 gmx editconf -f em/RNA_hairpin.gro -o em/RNA_hairpin.gro -c -d 1.0 -bt dodecahedron
 
 ```
-
-Parameter:
 
 - f: Eingabedatei (Struktur des Moleküls)
 - o: Ausgabedatei mit definierter Box
@@ -123,15 +140,12 @@ Notieren Sie sich das Boxvolumen und die Boxabmessungen, die nach Ausführung de
 Nachdem die Box definiert wurde, kann sie nun mit Wasser gefüllt werden.
 GROMACS verwendet dafür voräquilibrierte Wasserkoordinaten (Standarddatei spc216.gro), die durch Kopieren und
 Zuschneiden in das Boxvolumen eingesetzt werden.
-Überlappende Wassermoleküle werden automatisch entfernt.
 
 Der Befehl lautet:
 
 ```bash
 gmx solvate -cp em/RNA_hairpin.gro -cs spc216.gro -o em/RNA_hairpin.gro -p RNA_hairpin.top
 ```
-
-Parameter:
 
 - cp: Eingabedatei mit der definierten Box (aus editconf)
 - cs: Koordinatendatei des Lösungsmittels (Standard: spc216.gro)
@@ -147,7 +161,7 @@ durch das im Kraftfeld definierte Wassermodell (hier TIP3P) bestimmt.
 Nach diesem Prozess enthält die Ausgabe das RNA-Molekül umgeben von Wassermolekülen. Schauen Sie sich die Box an, indem Sie die erstellte `.gro` Datei in PyMOL laden.
 ```
 
-## 5.3 Hinzufügen von Ionen
+## 5.5 Hinzufügen von Ionen
 
 In diesem Schritt wird das System elektrisch neutralisiert und Ionen hinzugefügt.
 Das geschieht mit dem GROMACS-Modul genion, welches ausgewählte Wassermoleküle durch Ionen ersetzt.
@@ -166,24 +180,16 @@ Führen Sie den folgenden Befehl aus:
 gmx grompp -f ./mdp/em.mdp -c em/RNA_hairpin.gro -p RNA_hairpin.top -o em/RNA_hairpin.tpr -po em/RNA_hairpin.mdp -maxwarn 2
 ```
 
-Parameter:
-
 - f: Eingabedatei mit den Simulationsparametern (hier: ions.mdp)
 - c: aktuelle Koordinatendatei des solvatisierten Systems
 - p: Topologiedatei, die Moleküldefinitionen und Kraftfeldparameter enthält
 - o: Name der erzeugten Run-Input-Datei (ions.tpr)
 
-Die Datei ions.mdp befindet sich im Ordner mdp/ und enthält die grundlegenden Kontrollparameter für diese
-Vorbereitungsschritte.
-Obwohl sie für eine „Simulation“ erstellt ist, wird in diesem Fall keine eigentliche MD-Rechnung ausgeführt, grompp
-nutzt sie nur, um die vollständige Systembeschreibung auf atomarer Ebene zusammenzustellen.
-
 #### Ionen hinzufügen mit `genion`
 
-Mit der nun vorhandenen run-input-Datei kann das Ionisieren des Systems durchgeführt werden.
+Mit der nun vorhandenen Run-Input-Datei kann der eigentliche Prozess durchgeführt werden.
 genion ersetzt dabei einzelne Wassermoleküle durch Ionen, die in der Topologie ergänzt werden.
-Ionen werden benötigt, um die Nettoladung des Systems auszugleichen und damit die elektrostatische Berechnung (z. B. mit
-dem Particle Mesh Ewald-Verfahren) physikalisch korrekt bleibt.
+Ionen werden benötigt, um die Nettoladung des Systems auszugleichen.
 Bei Bedarf kann auch eine definierte Salzkonzentration (z.B. 0,1 M KCl) hinzugefügt werden.
 
 Führen Sie den folgenden Befehl aus:
@@ -191,8 +197,6 @@ Führen Sie den folgenden Befehl aus:
 ```bash
 gmx genion -s em/RNA_hairpin.tpr -o em/RNA_hairpin.gro -p RNA_hairpin.top -pname K -nname Cl -neutral
 ```
-
-Parameter:
 
 - s: Eingabedatei (ions.tpr), erzeugt durch grompp
 - o: Ausgabedatei mit den neuen Ionenkonfigurationen
@@ -208,14 +212,11 @@ Wählen Sie hier die Gruppe `SOL` aus und bestätigen Sie mit `Enter`.
 Berechnen Sie die Ionenkonzentration von Kalium in Ihrem System.
 ```
 
-## 5.4 Energieminimierung
+## 5.6 Energieminimierung
 
-Nach dem Aufbau und der Neutralisierung des Systems kann die Molekulardynamik-Simulation noch nicht direkt gestartet
-werden.  
-Zunächst müssen sterische Kollisionen oder ungünstige Geometrien im System beseitigt werden, die während der
-vorangegangenen Schritte entstanden sein können.  
-Dies geschieht durch eine Energie-Minimierung (EM), bei der das System in einen energetisch
-günstigen Startzustand gebracht wird.
+Vor dem Start der Molekulardynamik-Simulation müssen mögliche sterische Kollisionen und ungünstige Geometrien beseitigt
+werden. Dies erfolgt durch eine Energie-Minimierung (EM), die das System in einen energetisch stabilen Ausgangszustand
+überführt.
 
 ---
 
@@ -229,8 +230,6 @@ Dazu werden die Parameterdatei, die aktuelle Struktur und die Topologie kombinie
 gmx grompp -f ./mdp/em.mdp -c em/RNA_hairpin.gro -p RNA_hairpin.top -o em/RNA_hairpin.tpr
 ```
 
-Parameter:
-
 - f: Eingabedatei mit Minimierungsparametern (minim.mdp)
 - c: Startkoordinaten (ionisiertes System)
 - p: Topologiedatei
@@ -242,15 +241,13 @@ In der Datei gibt es die Einstellung `integrator = steep`. Diese Einstellung min
 Die Minimierung wird so lange fortgesetzt, bis der maximale Kraftwert unter einem definierten Schwellenwert (z. B. 1000
 kJ mol⁻¹ nm⁻¹) liegt oder die maximale Schrittzahl erreicht ist.
 
-##### Durchführung mit mdrun
+##### Durchführung mit `mdrun`
 
 Nach erfolgreicher Vorbereitung kann die Energie-Minimierung gestartet werden:
 
 ```bash
 gmx mdrun -v -s em/RNA_hairpin.tpr -c em/RNA_hairpin.gro -o em/RNA_hairpin.trr -e em/RNA_hairpin.edr -g em/RNA_hairpin.log -po em/RNA_hairpin.mdp
 ```
-
-Parameter:
 
 - v: „verbose“: zeigt den Fortschritt der Minimierung in der Konsole an
 - s: Eingabedatei (.tpr), erzeugt durch grompp
@@ -259,18 +256,18 @@ Parameter:
 - e: Binärdatei mit Energiewerten
 - g: Logdatei mit Protokoll des Minimierungslaufs
 
-Während der Minimierung werden keine dynamischen Bewegungen simuliert, sondern die atomaren Positionen entlang des
-Gradienten des Potentialfelds angepasst, bis die potentielle Energie minimiert ist.
-
+Während der Minimierung werden keine dynamischen Gleichungen integriert; stattdessen werden die Atomkoordinaten iterativ
+angepasst, bis ein Konvergenzkriterium erreicht ist oder die maximale Schrittzahl überschritten
+wird.
 Nach erfolgreicher Minimierung ist das System nun spannungsfrei und bereit für die Äquilibrierungsphase (NVT/NPT).
 
-## 5.5 Temperatur Äquilibrierung
+## 5.6 Temperatur Äquilibrierung
 
 In der NVT-Äquilibrierung wird das System langsam auf die Zieltemperatur gebracht, während das Volumen konstant
 bleibt. Positionsrestriktionen halten die RNA weitgehend fixiert, sodass sich das Lösungsmittel an die Moleküloberfläche
 anpassen kann. Dieser Schritt dient dazu, die Temperatur stabil zu etablieren, bevor der Druck angeglichen wird.
 
-Zunächst muss GROMACS alle Eingabedateien (Parameter, Struktur und Topologie) zu einer run-input-Datei zusammenfassen:
+Zunächst muss GROMACS alle Eingabedateien (Parameter, Struktur und Topologie) zu einer Run-Input-Datei zusammenfassen:
 
 ```bash
 mkdir nvt
@@ -303,25 +300,15 @@ gmx mdrun -v -s nvt/RNA_hairpin.tpr -c nvt/RNA_hairpin.gro -x nvt/RNA_hairpin.xt
 - g: Logdatei (.log) mit einem detaillierten Protokoll des Simulationsverlaufs, inklusive Start- und Endbedingungen,
   Step-Informationen und Warnungen.
 
-## 5.6 Druck Equillibrierung
+## 5.8 Druck Equillibrierung
 
 Nachdem im vorherigen Schritt die Temperatur erfolgreich stabilisiert wurde, muss nun auch der ruck des Systems an
 die gewünschten Bedingungen angepasst werden.  
 Dieser Schritt erfolgt unter einem NPT-Ensemble, bei dem Teilchenzahl (N), Druck (P) und Temperatur (T)
 konstant gehalten werden.
 
-Während der NPT-Äquilibrierung wird das Volumen der Simulationsbox flexibel angepasst, bis die Dichte des Systems (
-typischerweise etwa 1000 kg m⁻³ für Wasser) den Zielwert erreicht.  
-Die RNA bleibt weiterhin durch Positionsrestriktionen leicht fixiert, sodass sich vor allem Lösungsmittel und Ionen an
-die Moleküloberfläche anpassen.
-
----
-
 Die Erstellung der Run-Input-Datei für die NPT-Phase erfolgt analog zur NVT-Äquilibrierung, jedoch mit geänderten
 Parametern aus der Datei `npt.mdp`.  
-In dieser Datei sind die Druckkopplung und weitere relevante Parameter definiert.  
-Lemkul (2024) empfiehlt den Parrinello-Rahman-Barostat, da er bei biologischen Systemen eine realistische
-Druckschwankung ermöglicht.
 
 ```bash
 mkdir npt
@@ -333,11 +320,9 @@ Starten Sie die Druck-Äquilibrierung mit:
 ```bash
 gmx mdrun -v -s npt/RNA_hairpin.tpr -c npt/RNA_hairpin.gro -x npt/RNA_hairpin.xtc -cpo npt/RNA_hairpin.cpt -e npt/RNA_hairpin.edr -g npt/RNA_hairpin.log
 ```
+Die Flags ändern sich nicht, da nur die Parameter in den mdp-Dateien verändert werden
 
-Während dieses Schritts passt sich das Volumen des Systems an, um den gewünschten Druck (meist 1 bar) zu erreichen.  
-Temperatur und Druck werden durch die in der `.mdp`-Datei definierten Thermostat- und Barostat-Kopplungen kontrolliert.
-
-## 5.7 MD Simulaiton
+## 5.9 MD Simulaiton
 
 Analog zu den vorherigen Äquilibrierungsschritten wird nun die eigentliche MD-Simulation (Produktionslauf) vorbereitet
 und gestartet.  
@@ -347,7 +332,8 @@ sich entsprechend der in der Kraftfelddefinition vorgegebenen Wechselwirkungen.
 #### Anpassung der Simulationszeit
 
 Öffnen Sie nun die Datei mdp/md0.mdp in einem Texteditor.
-Legen Sie den Parameter für die Simulationszeit (nsteps) selbst fest und bestimmen Sie, wie lange Ihre Simulation laufen soll.
+Legen Sie den Parameter für die Simulationszeit (`nsteps`) selbst fest und bestimmen Sie, wie lange Ihre Simulation laufen
+soll.
 Beachten Sie, dass das die Simulationslänge von den Zeitschritten abhängt, die auf 2fs eingestellt sind.
 Starten Sie anschließend grompp und führen Sie die Simulation aus:
 

@@ -5,5 +5,4 @@
 - Dokumentieren Sie die einzelnen Schritte der Simulation (Energie-Minimierung, Äquilibrierung, Produktionslauf) mithilfe
 geeigneter Grafiken und Beschreibungen.
 
-- Analysieren Sie die Ergebnisse der langen MD-Simulation in Hinblick auf die strukturelle Veränderung des RNA-Hairpins (
-z. B. RMSD, RMSF, Wasserstoffbrücken).
+- Analysieren Sie die Ergebnisse der langen MD-Simulation in Hinblick auf die strukturelle Veränderung des RNA-Hairpins.

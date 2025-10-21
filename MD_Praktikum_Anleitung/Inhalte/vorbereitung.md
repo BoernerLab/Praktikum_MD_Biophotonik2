@@ -1,19 +1,6 @@
-# 2 Vorbereitung
+# 2 Vorbereitungsfragen
 
-Zur Durchführung des Versuchs sind folgende Voraussetzungen erforderlich:
-
-- Eine installierte GROMACS-Version in einer Linux-basierten Umgebung. (Installationsanleitung für
-  Windows: [hier](#install_gromacs))
-- PyMOL3 für Strukturvisualisierung (Installationsanleitung: [hier](#pymol_tutorial))
-- Python 3 in einer geeigneten Programmierumgebung z.B. Jupyter-Notebook für die Auswertung (Für die Auswertung können
-  Sie wahlweise PyVo installieren: <a href="https://boernerlab.github.io/PyVo/index_page.html" target="_blank">hier</a>)
-
-```{admonition} Wichtig
-:class: note
-
-Installieren Sie die entsprechenden Programme **vor dem Praktikumstermin** gemäß den verlinkten Anleitungen. Die Installation ist eine **Voraussetzung für die Teilnahme** am Praktikum.
-
-Bringen Sie bitte einen Laptop oder Rechner mit den vollständig installierten Programmen zum Versuch mit. Planen Sie ausreichend Zeit für die Installation ein, um technische Probleme vorab lösen zu können.
-
-```
-Bei Fragen oder Problemen zur Installation wenden Sie sich bitte rechtzeitig an uns.
+1.  Welche Informationen sind in einer PDB-Datei enthalten? Erstellen Sie eine Übersicht. 
+2.  Was versteht man unter einem „Kraftfeld“ (Force Field), und welche Arten von Wechselwirkungen werden durch ein Kraftfeld beschrieben?
+3.  Was sind periodische Randbedingungen und warum werden sie in MD-Simulationen verwendet?
+4.  Wie groß sollte der Zeitschritt in einer MD-Simulation gewählt werden und wovon hängt diese Wahl ab?
