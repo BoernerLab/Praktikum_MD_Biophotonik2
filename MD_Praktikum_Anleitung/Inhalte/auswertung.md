@@ -30,7 +30,6 @@ xlabel, ylabel = None, None
 
 with open("em/potential_energy_RNA.xvg") as f:
     for line in f:
-        # Header-Zeilen prüfen
         if line.startswith("@"):
             if "xaxis" in line and "label" in line:
                 xlabel = line.split('"')[1]

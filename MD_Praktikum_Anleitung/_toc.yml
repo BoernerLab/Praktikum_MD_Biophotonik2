@@ -9,6 +9,7 @@ parts:
     - file: Inhalte/programme
     - file: Inhalte/durchführung
     - file: Inhalte/auswertung
+    - file: Inhalte/literatur
   - caption: Tutorials
     chapters:
     - file: Inhalte/install_gromacs
