@@ -1,48 +1,58 @@
 name: deploy-book
 
-# Run this when the master or main branch changes
 on:
   push:
     branches:
-    - main
+      - main
+
+# Optional, falls du interne Links als /<repo>/ … ausliefern willst.
 env:
   BASE_URL: /${{ github.event.repository.name }}
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
-
-# This job installs dependencies, builds the book, and pushes it to `gh-pages`
 jobs:
   deploy-book:
     runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
+
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    # Install dependencies
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
 
-    - name: Install dependencies
-      run: pip install '.[MD_Praktikum_Anleitung]'
+      # Entweder requirements.txt nutzen …
+      # - name: Install dependencies
+      #   run: pip install -r requirements.txt
 
-    # Build the book
-    - name: Build the book
-      run: jupyter-book build MD_Praktikum_Anleitung
+      # … oder minimal nur jupyter-book installieren:
+      - name: Install Jupyter Book
+        run: pip install jupyter-book
 
-    # Upload the book's HTML as an artifact
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: "MD_Praktikum_Anleitung/_build/html"
+      # Optional: Wenn du Sphinx-Extensions brauchst, hier ergänzen:
+      # run: pip install jupyter-book sphinx-external-toc myst-parser
 
-    # Deploy the book's HTML to GitHub Pages
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+      - name: Build the book
+        run: jupyter-book build MD_Praktikum_Anleitung
+
+      # GitHub Pages v4 Workflow: zuerst konfigurieren
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: MD_Praktikum_Anleitung/_build/html
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
