@@ -24,3 +24,5 @@ Im Rahmen des Versuchs wird eine **Molekulardynamik-Simulation eines RNA-Hairpin
 | `amber14sb_OL15.ff/` | Kraftfeldparameter für RNA und Proteine |
 | `mdp/` | Parameterdateien für Energieminimierung, NVT-, NpT- und Produktionsläufe |
 | `Praktikum_MD.ipynb` | Jupyter Notebook zur Analyse der Simulationsergebnisse |
+
+Autoren: Felix Erichson & Richard Börner
