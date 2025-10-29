@@ -4,14 +4,14 @@ name: deploy-book
 on:
   push:
     branches:
-    - master
     - main
-    # If your git repository has the Jupyter Book within some-subfolder next to
-    # unrelated files, you can make this run only if a file within that specific
-    # folder has been modified.
-    #
-    # paths:
-    # - some-subfolder/**
+env:
+  BASE_URL: /${{ github.event.repository.name }}
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 
 # This job installs dependencies, builds the book, and pushes it to `gh-pages`
 jobs:
@@ -46,7 +46,7 @@ jobs:
     # Build the book
     - name: Build the book
       run: |
-        jupyter-book build .
+        jupyter-book build MD_Praktikum_Anleitung
 
     # Upload the book's HTML as an artifact
     - name: Upload artifact
