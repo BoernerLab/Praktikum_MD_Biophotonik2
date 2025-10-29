@@ -16,7 +16,7 @@ Im Rahmen des Versuchs wird eine **Molekulardynamik-Simulation eines RNA-Hairpin
 
 ---
 
-## Inhalt des Repositories
+## Inhalt des Ordners `MD_Praktikum`
 
 | Datei / Ordner | Beschreibung |
 |----------------|---------------|
