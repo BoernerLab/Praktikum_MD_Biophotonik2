@@ -1,15 +1,26 @@
-<h1 align="center" style="font-size:4em; "> Praktikum Biopotonik II </h1>
+# Praktikum Biophotonik II – Molekulardynamik (MD)
 
-<br>
-<br>
+Dieses Repository enthält die Materialien zum **Praktikum Biophotonik II** an der Hochschule Mittweida.  
+Im Rahmen des Versuchs wird eine **Molekulardynamik-Simulation eines RNA-Hairpins** mit **GROMACS** durchgeführt und anschließend ausgewertet.
 
-<p align="center" style="font-size:20pt">MD Simualtion eines RNA Hairpins</p>
+---
 
-<br>
+## Ziel des Praktikums
 
-<h1 align="center">Versuch 5 </h1> 
+- Durchführung einer vollständigen MD-Simulation eines RNA-Hairpins mit GROMACS  
+- Verständnis der einzelnen Phasen:  
+  1. **Energieminimierung**  
+  2. **Äquilibrierung (NVT/NpT)**  
+  3. **Produktionslauf**
+- Analyse der Trajektorie und Bewertung struktureller Veränderungen mithilfe von **PyMOL** und **Python (MDAnalysis)**
 
-![logo](MD_Praktikum_Anleitung/Inhalte/Bilder/HSMW_LOGO_rgb.png)
+---
 
-<p align="center">Hochschule Mittweida</p>
-<p align="center">Laserinstitut Hochschule Mittweida</p>
+## Inhalt des Repositories
+
+| Datei / Ordner | Beschreibung |
+|----------------|---------------|
+| `RNA_hairpin.pdb` | Strukturdatei des RNA-Hairpins |
+| `amber14sb_OL15.ff/` | Kraftfeldparameter für RNA und Proteine |
+| `mdp/` | Parameterdateien für Energieminimierung, NVT-, NpT- und Produktionsläufe |
+| `Praktikum_MD.ipynb` | Jupyter Notebook zur Analyse der Simulationsergebnisse |
